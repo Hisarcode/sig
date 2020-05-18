@@ -20,12 +20,50 @@ class Home extends CI_Controller
 
 	public function bangunan_json()
 	{
+		$kategori = $_GET['cekdata'];
 		$query = "SELECT `bangunan`.*, `bangunan_kategori`.*
-                FROM `bangunan` JOIN `bangunan_kategori`
-                ON `bangunan`.`bangunan_kategori_id` = `bangunan_kategori`.`kategori_id`
-        ";
+					FROM `bangunan` JOIN `bangunan_kategori`
+					ON `bangunan`.`bangunan_kategori_id` = `bangunan_kategori`.`kategori_id` WHERE `bangunan`.`bangunan_kategori_id`=" . $kategori;
 		$data = $this->db->query($query)->result_array();
 
 		echo json_encode($data);
+	}
+
+	public function detail_bangunan_json()
+	{
+		$id = $_POST['id'];
+		$query = "SELECT `bangunan`.*, `kecamatan`.*
+					FROM `bangunan` JOIN `kecamatan`
+					ON `bangunan`.`kecamatan_id` = `kecamatan`.`id` WHERE `bangunan`.`bangunan_id`=" . $id;
+		$data = $this->db->query($query)->row_array();
+		if ($data['bangunan_gambar'] == 0) $data['bangunan_gambar'] = "default.jpg";
+		$detail = "<!-- Profile Image -->
+		<div class=\"card card-primary card-outline\">
+			<div class=\"card-body box-profile\">
+				<div class=\"text-center\">
+				<img class=\"profile-user-img img-fluid img-circle\"
+                       src=\"" . base_url('upload/bangunan/') . $data['bangunan_gambar'] . "\"
+                       alt=\"Gambar Bangunan\">
+				</div>
+
+				<h3 class=\"profile-username text-center\">" . $data['bangunan_nama'] . "</h3>
+
+				<p class=\"text-muted text-center\">" . $data['nama_kecamatan'] . "</p>
+
+				<ul class=\"list-group list-group-unbordered mb-3\">
+					<li class=\"list-group-item\">
+						<b>Latitude</b> <a class=\"float-right\">" . $data['bangunan_lat'] . "</a>
+					</li>
+					<li class=\"list-group-item\">
+						<b>Longitude</b> <a class=\"float-right\">" . $data['bangunan_long'] . "</a>
+					</li>
+				
+				</ul>
+
+				<a href=\"" . base_url('bangunan/detail/') . $data['bangunan_id'] . "\" class=\"btn btn-primary btn-block\"><b>Lihat Data</b></a>
+			</div>
+			<!-- /.card-body -->
+		</div>";
+		echo $detail;
 	}
 }
