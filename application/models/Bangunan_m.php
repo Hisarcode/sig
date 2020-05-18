@@ -8,30 +8,37 @@ class Bangunan_m extends CI_Model
     public $bangunan_nama;
     public $bangunan_lat;
     public $bangunan_long;
-    public $bangunan_gambar = "default.jpg";
-    public $bangunan_alamat;
-    public $bangunan_kategori_id;
-    public $kecamatan_id;
+    public $bangunan_gambar;
+    public $bangunan_alamat = "Alamat Tidak Diketahui";
+    public $bangunan_kategori_id = "1";
+    public $kecamatan_id = "1";
 
-    public function rules(){
-        return[
-            ['field' => 'bangunan_nama',
-            'label' => 'Nama Bangunan',
-            'rules' => 'required'],
+    public function rules()
+    {
+        return [
+            [
+                'field' => 'nama',
+                'label' => 'Nama Bangunan',
+                'rules' => 'required'
+            ],
 
-            ['field' => 'bangunan_lat',
-            'label' => 'Latitude Bangunan',
-            'rules' => 'required'],
-            
-            ['field' => 'bangunan_long',
-            'label' => 'Longitude Bangunan',
-            'rules' => 'required']
+            [
+                'field' => 'lat',
+                'label' => 'Latitude Bangunan',
+                'rules' => 'required'
+            ],
+
+            [
+                'field' => 'long',
+                'label' => 'Longitude Bangunan',
+                'rules' => 'required'
+            ]
         ];
     }
     public function getBangunan()
     {
         $this->db->select('*');
-        $this->db->from('bangunan');
+        $this->db->from($this->_table);
         $this->db->join('bangunan_kategori', 'kategori_id = bangunan_kategori_id');
         return $this->db->get()->result_array();
     }
@@ -39,39 +46,53 @@ class Bangunan_m extends CI_Model
     public function getBangunanById($id)
     {
         $this->db->select('*');
-        $this->db->from('bangunan');
+        $this->db->from($this->_table);
         $this->db->join('bangunan_kategori', 'kategori_id = bangunan_kategori_id');
         $this->db->where('bangunan_id', $id);
         // return $this->db->get('bangunan', ['bangunan_id' => $id])->row_array();
         return $this->db->get()->row_array();
     }
 
-    public function tambahDataBangunan($data)
+    public function tambahDataBangunan()
     {
-        $data = [
-            'bangunan_nama' =>  $this->input->post('nama'),
-            'bangunan_id' =>  $this->input->post('id'),
-            'bangunan_lat' =>  $this->input->post('lat'),
-            'bangunan_long' =>  $this->input->post('long'),
-            'bangunan_gambar' => $this->_uploadImage();
-        ];
+        $post = $this->input->post();
+        $this->bangunan_nama =  $post['nama'];
+        $this->bangunan_lat =  $post['lat'];
+        $this->bangunan_long =  $post['long'];
+        $this->bangunan_gambar = $this->_uploadImage();
 
-        $this->db->insert('bangunan', $data);
-        return $this->db->rowCount();
+        return $this->db->insert($this->_table, $this);
     }
 
-    private function _uploadImage($bangunan_id)
+    public function editDataBangunan()
+    {
+        $post = $this->input->post();
+
+        $this->bangunan_id = $post["id"];
+        $this->bangunan_nama =  $post['nama'];
+        $this->bangunan_lat =  $post['lat'];
+        $this->bangunan_long =  $post['long'];
+        if (!empty($_FILES["gambar"]["name"])) {
+            $this->bangunan_gambar = $this->_uploadImage();
+        } else {
+            $this->bangunan_gambar = $post["old_image"];
+        }
+        return $this->db->update($this->_table, $this, array('bangunan_id' => $post["id"]));
+    }
+
+    private function _uploadImage()
     {
         $config['upload_path'] = './upload/bangunan/';
-        $config['allowed_types'] = 'jpg|jpeg|png';
-        $config['file_name'] = $bangunan_id;
+        $config['allowed_types'] = 'jpeg|jpg|png';
+        $config['file_name'] = $this->bangunan_id;
         $config['overwrite'] = true;
-        $config['maxsize'] = 1024;
+        $config['max_size'] = 3072;
 
         $this->load->library('upload', $config);
 
-        if ($this->upload->do_upload('image')) {
-            return $this->upload->data("file_name");
+        if ($this->upload->do_upload('gambar')) {
+
+            return $this->upload->data('file_name');
         }
 
         return "default.jpg";
@@ -79,27 +100,9 @@ class Bangunan_m extends CI_Model
 
     public function hapusDataBangunan($id)
     {
-        $data = ['bangunan_id' =>  $id];
-        $this->db->delete('bangunan', $data);
-        return $this->db->rowCount();
+        // $data = ['bangunan_id' =>  $id];
+        // $this->db->delete('bangunan', $data);
+        // return $this->db->rowCount();
+        return $this->db->delete($this->_table, array("bangunan_id" => $id));
     }
-
-    // public function ubahDataMahasiswa($data)
-    // {
-    //     $query = "UPDATE " . $this->table . " SET
-    //                 nama = :nama,
-    //                 nim = :nim,
-    //                 email = :email,
-    //                 jurusan = :jurusan
-    //                 WHERE id = :id";
-    //     $this->db->query($query);
-    //     $this->db->bind('nama', $data['nama']);
-    //     $this->db->bind('nim', $data['nim']);
-    //     $this->db->bind('email', $data['email']);
-    //     $this->db->bind('jurusan', $data['jurusan']);
-    //     $this->db->bind('id', $data['id']);
-
-    //     $this->db->execute();
-
-    //     return $
 }
