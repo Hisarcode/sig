@@ -2,80 +2,78 @@
 <div class="content-wrapper">
     <!--/. container-fluid -->
 
+    <section class="content-header">
 
-    <div class="container">
+        <div class="container">
 
-        <div class="row">
-            <div class="col-lg-6">
+
+            <div class="row">
+                <div class="col-md-8">
+                    <?php if ($this->session->flashdata('category_success')) : ?>
+                        <div class="alert alert-success" role="alert"> <?= $this->session->flashdata('category_success') ?> </div>
+                    <?php endif; ?>
+
+                    <?php if ($this->session->flashdata('category_error')) : ?>
+                        <div class="alert alert-danger" role="alert"> <?= $this->session->flashdata('category_error') ?> </div>
+                    <?php endif; ?>
+
+                    <?php if ($this->session->userdata('username') <> "") : ?>
+                        <a class="btn btn-primary" href="<?= base_url('bangunan/tambah') ?>" role="button">
+                            Tambah Data Fasilitas Pendidikan
+                        </a>
+                    <?php endif; ?>
+                    <br><br>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">DAFTAR SEKOLAH</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th style="width: 10px">#</th>
+                                        <th>Nama Sekolah</th>
+                                        <th>Kategori</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $i = $loop + 1; ?>
+                                    <?php foreach ($bangunan as $bg) : ?>
+
+                                        <tr>
+                                            <td><?= $i ?>.</td>
+                                            <td><?= $bg['bangunan_nama']; ?></td>
+                                            <td>
+                                                <a> <?= $bg['kategori_nama']; ?></a>
+                                            </td>
+                                            <td class="text-center">
+                                                <?php if ($this->session->userdata('username') <> "") : ?>
+
+                                                    <a href="<?= base_url(); ?>bangunan/hapus/<?= $bg['bangunan_id']; ?>" class="badge badge-danger float-center ml-1 mb-1" onclick="return confirm('Yakin?');">hapus</a>
+
+                                                    <a href="<?= base_url(); ?>bangunan/ubah/<?= $bg['bangunan_id']; ?>" class="badge badge-success float-center ml-1 mb-1">ubah</a>
+                                                <?php endif; ?>
+
+                                                <a href="<?= base_url(); //arahkan ke controller mahasiswa 
+                                                            ?>bangunan/detail/<?= $bg['bangunan_id']; ?>" class="badge badge-primary float-center mb-1 ml-1">detail</a>
+                                            </td>
+                                        </tr>
+                                        <?php $i++; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer clearfix">
+                            <?= $pagination; ?>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- /.card -->
         </div>
 
-        <div class="row mt-3">
-            <div class="col-lg-6">
-
-                <button type="button" class="btn btn-primary tombolTambahData" data-toggle="modal" data-target="#formModal">
-                    Tambah Data Fasilitas Pendidikan
-                </button>
-
-                <br><br>
-                <h3>Daftar Fasilitas Pendidikan</h3>
-
-                <ul class="list-group">
-                    <?php foreach ($bangunan as $bg) : ?>
-                        <li class="list-group-item">
-
-                            <?= $bg['bangunan_nama']; ?>
-                            <a href="<?= base_url(); ?>bangunan/hapus/<?= $bg['bangunan_id']; ?>" class="badge badge-danger float-right ml-1" onclick="return confirm('Yakin?');">hapus</a>
-
-                            <a href="<?= base_url(); ?>bangunan/ubah/<?= $bg['bangunan_id']; ?>" class="badge badge-success float-right ml-1 tampilModalUbah" data-toggle="modal" data-target="#formModal" data-id="<?= $bg['bangunan_id']; ?>">ubah</a>
-
-                            <a href="<?= base_url(); //arahkan ke controller mahasiswa 
-                                        ?>bangunan/detail/<?= $bg['bangunan_id']; ?>" class="badge badge-primary float-right ml-1">detail</a>
-
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-
-            </div>
-        </div>
-    </div>
-
+    </section>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="judulModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="judulModal">Tambah Data Fasilitas Pendidikan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- penting untuk form -->
-                <form action="<?= base_url(); ?>/mahasiswa/tambah" method="post">
-                    <input type="hidden" name="id" id="id">
-                    <div class="form-group">
-                        <label for="nama">Nama Bangunan</label>
-                        <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lat">Latitud</label>
-                        <input type="text" class="form-control" id="lat" name="lat" placeholder="Masukkan Koordinat Latitude">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="long">Longitude</label>
-                        <input type="text" class="form-control" id="long" name="long" placeholder="Masukkan Koordinat Longitude">
-                    </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Tambah Data</button>
-                </form>
-            </div>
-        </div>
-    </div>
