@@ -10,10 +10,9 @@
 <!-- AdminLTE App  Wajib -->
 <script src="<?= base_url('assets/') ?>dist/js/adminlte.js"></script>
 
-<!-- Leaflet  Wajib -->
-<script src="<?= base_url('assets/') ?>plugins/leaflet/leaflet.js"></script>
+<script type="text/javascript" src="<?= base_url('assets/') ?>js/modal.js"></script>
 
-<script src="<?= base_url('assets/') ?>plugins/leaflet-panel-layers/src/leaflet-panel-layers.js"></script>
+
 </body>
 
 </html>
