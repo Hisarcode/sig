@@ -29,6 +29,22 @@ class Home extends CI_Controller
 		echo json_encode($data);
 	}
 
+	public function cari_json()
+	{
+		$keyword = $_GET['keyword'];
+
+		// $this->db->like('title', $keyword);
+		// $this->db->or_like('body', $keyword);
+		$this->db->select('*');
+		$this->db->from('bangunan');
+		$this->db->join('bangunan_kategori', ' bangunan.bangunan_kategori_id = bangunan_kategori.kategori_id ');
+		$this->db->like('bangunan_nama', $keyword);
+		$this->db->or_like('bangunan_alamat', $keyword);
+		$data = $this->db->get()->result_array();
+
+		echo json_encode($data);
+	}
+
 	public function detail_bangunan_json()
 	{
 		$id = $_POST['id'];
@@ -36,7 +52,7 @@ class Home extends CI_Controller
 					FROM `bangunan` JOIN `kecamatan`
 					ON `bangunan`.`kecamatan_id` = `kecamatan`.`id` WHERE `bangunan`.`bangunan_id`=" . $id;
 		$data = $this->db->query($query)->row_array();
-		if ($data['bangunan_gambar'] == 0) $data['bangunan_gambar'] = "default.jpg";
+
 		$detail = "<!-- Profile Image -->
 		<div class=\"card card-primary card-outline\">
 			<div class=\"card-body box-profile\">

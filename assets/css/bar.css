@@ -1,0 +1,23 @@
+
+.validasi-pencarian {
+    position: absolute;
+    top: 13px;
+    right: 10%;
+    padding: 2px;
+    font-family: 'Viga', sans-serif;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 300;
+    margin-left: 50px;
+    padding: 0px 10px 0px 10px;
+    text-overflow: ellipsis;
+    display: none;
+    z-index: 1000;
+    cursor: default;
+}
+
+.validasi-pencarian i {
+    cursor: pointer;
+    color: tomato;
+}
