@@ -110,6 +110,7 @@ class Bangunan_m extends CI_Model
     {
         $this->db->select('*');
         $this->db->from($this->_table);
+        //example of join 3 table 
         $this->db->join('bangunan_kategori', 'kategori_id = bangunan_kategori_id');
         $this->db->join('kecamatan', 'id = kecamatan_id');
         $this->db->where('bangunan_id', $id);
