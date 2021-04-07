@@ -414,6 +414,7 @@ $(".perkategori").on('change', function (e) {
                         point_id: msgdata.bangunan_id,
                         nama: msgdata.bangunan_nama,
                         custom: 'custom1',
+                        IdCheck: $(this).val(),
                         IdKategori: msgdata.bangunan_kategori_id,
                         riseOnHover: true
                     }
@@ -450,7 +451,8 @@ $(".perkategori").on('change', function (e) {
     } else if ($(this).is(":not(:checked)")) {
         for (let x = 0; x < katmarkers.length; x++) {
             let isVal = katmarkers[x].options;
-            if (isVal.IdKategori == $(this).val()) {
+            console.log(isVal);
+            if (isVal.IdCheck == $(this).val()) {
                 map.removeLayer(katmarkers[x]);
             }
         }
