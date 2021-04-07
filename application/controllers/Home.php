@@ -20,12 +20,18 @@ class Home extends CI_Controller
 
 	public function bangunan_json()
 	{
-		$kategori = $_GET['cekdata'];
-		$query = "SELECT `bangunan`.*, `bangunan_kategori`.*
+		$kategori = (int) $_GET['cekdata'];
+		if ($kategori > 5) {
+			$kecamatan = $kategori - 5;
+			$query = "SELECT `bangunan`.*, `bangunan_kategori`.*
+					FROM `bangunan` JOIN `bangunan_kategori`
+					ON `bangunan`.`bangunan_kategori_id` = `bangunan_kategori`.`kategori_id` WHERE `bangunan`.`kecamatan_id`=" . $kecamatan;
+		} else {
+			$query = "SELECT `bangunan`.*, `bangunan_kategori`.*
 					FROM `bangunan` JOIN `bangunan_kategori`
 					ON `bangunan`.`bangunan_kategori_id` = `bangunan_kategori`.`kategori_id` WHERE `bangunan`.`bangunan_kategori_id`=" . $kategori;
+		}
 		$data = $this->db->query($query)->result_array();
-
 		echo json_encode($data);
 	}
 
